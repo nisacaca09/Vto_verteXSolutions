@@ -1,26 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@300;400;500;700&display=swap');
+
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --vto-bg: #0a0a0f;
+  --vto-bg-card: #111118;
+  --vto-bg-elevated: #1a1a28;
+  --vto-border: #2a2a3a;
+  --vto-primary: #2563EB;
+  --vto-primary-glow: #2563EB44;
+  --vto-secondary: #3B82F6;
+  --vto-cta: #F97316;
+  --vto-cta-glow: #F9731644;
+  --vto-text: #E0E0E0;
+  --vto-text-muted: #9CA3AF;
+  --vto-text-dim: #6B7280;
+  --vto-success: #10B981;
+  --vto-warning: #F59E0B;
+  --vto-danger: #EF4444;
+  --vto-purple: #8B5CF6;
+
+  --background: var(--vto-bg);
+  --foreground: var(--vto-text);
+  --card: var(--vto-bg-card);
+  --card-foreground: var(--vto-text);
+  --popover: var(--vto-bg-card);
+  --popover-foreground: var(--vto-text);
+  --primary: var(--vto-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--vto-bg-elevated);
+  --secondary-foreground: var(--vto-text);
+  --muted: var(--vto-bg-elevated);
+  --muted-foreground: var(--vto-text-muted);
+  --accent: var(--vto-bg-elevated);
+  --accent-foreground: var(--vto-text);
+  --destructive: var(--vto-danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--vto-border);
+  --input: var(--vto-border);
+  --ring: var(--vto-primary);
+  --radius: 0.75rem;
+
+  --sidebar-background: var(--vto-bg-card);
+  --sidebar-foreground: var(--vto-text);
+  --sidebar-primary: var(--vto-primary);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--vto-bg-elevated);
+  --sidebar-accent-foreground: var(--vto-text);
+  --sidebar-border: var(--vto-border);
+  --sidebar-ring: var(--vto-primary);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius: 0.75rem;
+  --color-sidebar-background: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-sans: 'Exo', sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--vto-bg);
+  color: var(--vto-text);
+  font-family: 'Roboto Mono', monospace;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Exo', sans-serif;
+}
+
+/* Noise texture overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 20px var(--vto-primary-glow), 0 0 40px var(--vto-primary-glow);
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px var(--vto-cta-glow), 0 0 40px var(--vto-cta-glow);
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 10px var(--vto-primary-glow);
+}
+
+.text-glow-orange {
+  text-shadow: 0 0 10px var(--vto-cta-glow);
+}
+
+/* Gradient border */
+.gradient-border {
+  border: 1px solid transparent;
+  background: linear-gradient(var(--vto-bg-card), var(--vto-bg-card)) padding-box,
+              linear-gradient(135deg, var(--vto-primary), var(--vto-cta)) border-box;
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image: linear-gradient(var(--vto-border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--vto-border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.3;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vto-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vto-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vto-primary);
+}
+

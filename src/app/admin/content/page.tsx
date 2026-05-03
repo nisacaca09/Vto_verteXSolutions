@@ -13,7 +13,7 @@ import {
   Clock,
   CheckCircle,
 } from "lucide-react";
-import { supabase, type Blog } from "../../../lib/supabase";
+import { getSupabase, type Blog } from "../../../lib/supabase";
 
 const categories = [
   "All",
@@ -38,6 +38,7 @@ export default function ContentPage() {
   }, []);
 
   async function fetchArticles() {
+  const supabase = getSupabase();
     const { data, error } = await supabase
       .from("blogs")
       .select("*")
@@ -56,7 +57,8 @@ export default function ContentPage() {
   async function deleteArticle(id: string) {
     if (!confirm("Yakin ingin hapus artikel ini?")) return;
 
-    const { error } = await supabase
+    const supabase = getSupabase();
+    const { data, error } = await supabase
       .from("blogs")
       .delete()
       .eq("id", id);
@@ -82,7 +84,8 @@ export default function ContentPage() {
         : null,
   };
 
-  const { error } = await supabase
+  const supabase = getSupabase();
+    const { data, error } = await supabase
     .from("blogs")
     .update(updates)
     .eq("id", article.id);

@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Clock, Eye, ArrowRight, User, Search } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { supabase, type Blog } from "../../lib/supabase";
+import { getSupabase, type Blog } from "../../lib/supabase";
 
 const categories = [
   "All",
@@ -34,7 +34,8 @@ export default function BlogPage() {
 
   useEffect(() => {
     async function fetchBlogs() {
-      const { data } = await supabase
+     const supabase = getSupabase();
+    const { data, error } = await supabase
         .from("blogs")
         .select("*")
         .eq("status", "published")

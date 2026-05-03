@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Navbar } from "../../../components/navbar";
 import { Footer } from "../../../components/footer";
-import { supabase, type Blog } from "../../../lib/supabase";
+import { getSupabase, type Blog } from "../../../lib/supabase";
 
 export default function BlogDetailPage() {
   const { slug } = useParams();
@@ -13,7 +13,8 @@ export default function BlogDetailPage() {
 
   useEffect(() => {
     async function fetchDetail() {
-      const { data, error } = await supabase
+    const supabase = getSupabase();
+        const { data, error } = await supabase
         .from("blogs")
         .select("*")
         .eq("slug", slug)

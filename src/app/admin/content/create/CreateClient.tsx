@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "../../../../lib/supabase";
+import {  getSupabase  } from "../../../../lib/supabase";
 
 export default function CreateClient({
   editId,
@@ -20,7 +20,8 @@ export default function CreateClient({
     if (!editId) return;
 
     async function load() {
-      const { data, error } = await supabase
+   const supabase = getSupabase();
+    const { data, error } = await supabase
         .from("blogs")
         .select("*")
         .eq("id", editId)

@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Clock, Eye, ArrowRight, User, Search } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { getSupabase, type Blog } from "../../lib/supabase";
+import { supabase, type Blog } from "../../lib/supabase";
 
 const categories = [
   "All",
@@ -32,21 +32,32 @@ export default function BlogPage() {
   const [activeCat, setActiveCat] = useState("All");
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    async function fetchBlogs() {
-     const supabase = getSupabase();
+useEffect(() => {
+  async function fetchBlogs() {
     const { data, error } = await supabase
-        .from("blogs")
-        .select("*")
-        .eq("status", "published")
-        .order("published_at", { ascending: false });
+      .from("blogs")
+      .select("*")
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
 
-      if (data) setArticles(data);
+    console.log("BLOG DATA:", data);
+    console.log("BLOG ERROR:", error);
+
+    if (error) {
+      console.error(error);
       setLoading(false);
+      return;
     }
 
-    fetchBlogs();
-  }, []);
+    if (data) {
+      setArticles(data);
+    }
+
+    setLoading(false);
+  }
+
+  fetchBlogs();
+}, []);
 
   const filtered = useMemo(() => {
     return articles.filter((a) => {

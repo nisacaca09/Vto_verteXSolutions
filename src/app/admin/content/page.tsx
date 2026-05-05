@@ -13,7 +13,7 @@ import {
   Clock,
   CheckCircle,
 } from "lucide-react";
-import { getSupabase, type Blog } from "../../../lib/supabase";
+import { supabase, type Blog } from "../../../lib/supabase";
 
 const categories = [
   "All",
@@ -38,7 +38,6 @@ export default function ContentPage() {
   }, []);
 
   async function fetchArticles() {
-  const supabase = getSupabase();
     const { data, error } = await supabase
       .from("blogs")
       .select("*")
@@ -50,15 +49,13 @@ export default function ContentPage() {
     }
 
     if (data) setArticles(data);
-
     setLoading(false);
   }
 
   async function deleteArticle(id: string) {
     if (!confirm("Yakin ingin hapus artikel ini?")) return;
 
-    const supabase = getSupabase();
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("blogs")
       .delete()
       .eq("id", id);
@@ -72,42 +69,41 @@ export default function ContentPage() {
     setArticles((prev) => prev.filter((a) => a.id !== id));
   }
 
- async function toggleStatus(article: Blog) {
-  const newStatus: Blog["status"] =
-    article.status === "published" ? "draft" : "published";
+  async function toggleStatus(article: Blog) {
+    const newStatus: Blog["status"] =
+      article.status === "published" ? "draft" : "published";
 
-  const updates = {
-    status: newStatus,
-    published_at:
-      newStatus === "published"
-        ? new Date().toISOString()
-        : null,
-  };
+    const updates = {
+      status: newStatus,
+      published_at:
+        newStatus === "published"
+          ? new Date().toISOString()
+          : null,
+    };
 
-  const supabase = getSupabase();
-    const { data, error } = await supabase
-    .from("blogs")
-    .update(updates)
-    .eq("id", article.id);
+    const { error } = await supabase
+      .from("blogs")
+      .update(updates)
+      .eq("id", article.id);
 
-  if (error) {
-    console.error(error);
-    alert(error.message);
-    return;
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
+
+    setArticles((prev) =>
+      prev.map((a) =>
+        a.id === article.id
+          ? {
+              ...a,
+              status: newStatus,
+              published_at: updates.published_at,
+            }
+          : a
+      )
+    );
   }
-
-  setArticles((prev) =>
-    prev.map((a) =>
-      a.id === article.id
-        ? {
-            ...a,
-            status: newStatus,
-            published_at: updates.published_at,
-          }
-        : a
-    )
-  );
-}
 
   const filtered = useMemo(() => {
     return articles.filter((a) => {
@@ -154,7 +150,6 @@ export default function ContentPage() {
         </Link>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
           {
@@ -186,10 +181,7 @@ export default function ContentPage() {
                 background: `color-mix(in srgb, ${s.color} 15%, transparent)`,
               }}
             >
-              <s.icon
-                className="h-5 w-5"
-                style={{ color: s.color }}
-              />
+              <s.icon className="h-5 w-5" style={{ color: s.color }} />
             </div>
 
             <div>
@@ -204,7 +196,6 @@ export default function ContentPage() {
         ))}
       </div>
 
-      {/* Search & Filter */}
       <div className="flex flex-col gap-3 rounded-xl border border-[var(--vto-border)] bg-[var(--vto-bg-card)] p-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--vto-text-dim)]" />
@@ -245,7 +236,6 @@ export default function ContentPage() {
         </div>
       </div>
 
-      {/* Articles */}
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -282,16 +272,16 @@ export default function ContentPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-1">
+                <div className="flex gap-3">
                   <Link href={`/blog/${a.slug}`}>
                     <Eye className="h-4 w-4" />
                   </Link>
 
-                  <Link href={`/admin/content/create?/blog/${a.slug}`}>
+                  <Link href={`/admin/content/edit/${a.id}`}>
                     <Edit className="h-4 w-4" />
                   </Link>
 
-                  <button onClick={() => deleteArticle(a.slug)}>
+                  <button onClick={() => deleteArticle(a.id)}>
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>

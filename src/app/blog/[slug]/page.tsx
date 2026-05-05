@@ -4,26 +4,33 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Navbar } from "../../../components/navbar";
 import { Footer } from "../../../components/footer";
-import { getSupabase, type Blog } from "../../../lib/supabase";
+import { supabase, type Blog } from "../../../lib/supabase";
 
 export default function BlogDetailPage() {
-  const { slug } = useParams();
+  const params = useParams();
+  const slug = params.slug as string;
+
   const [article, setArticle] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchDetail() {
-    const supabase = getSupabase();
-        const { data, error } = await supabase
+      const { data, error } = await supabase
         .from("blogs")
         .select("*")
         .eq("slug", slug)
         .single();
 
-      if (data) setArticle(data);
-      setLoading(false);
-
       console.log("DETAIL:", data, error);
+
+      if (error) {
+        console.error(error);
+        setLoading(false);
+        return;
+      }
+
+      setArticle(data);
+      setLoading(false);
     }
 
     if (slug) fetchDetail();

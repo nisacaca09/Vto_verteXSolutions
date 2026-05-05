@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Eye, Clock, Send, CheckCircle, Tag } from "lucide-react";
@@ -19,7 +19,7 @@ function generateSlug(text: string): string {
     .trim();
 }
 
-export default function CreateContentPage() {
+function CreateContentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("id");
@@ -214,5 +214,12 @@ export default function CreateContentPage() {
         </div>
       </div>
     </div>
+    );
+}
+    export default function CreateContentPage() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center text-sm font-mono text-[var(--vto-text-dim)]">Loading editor...</div>}>
+      <CreateContentForm />
+    </Suspense>
   );
 }
